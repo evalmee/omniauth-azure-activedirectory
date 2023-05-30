@@ -78,10 +78,13 @@ module OmniAuth
       credentials { { code: @code } }
       extra do
         { session_state: @session_state,
-          raw_info:
-            { id_token: @id_token,
-              id_token_claims: @claims,
-              id_token_header: @header } }
+          raw_info: {
+            id_token: @id_token,
+            id_token_claims: @claims,
+            id_token_header: @header
+          },
+          tenant_info: (tenant.info(@claims) if tenant.respond_to?(:info))
+        }
       end
 
       DEFAULT_RESPONSE_TYPE = 'code id_token'
