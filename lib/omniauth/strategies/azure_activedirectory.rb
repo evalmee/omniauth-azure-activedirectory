@@ -83,7 +83,7 @@ module OmniAuth
             id_token_claims: @claims,
             id_token_header: @header
           },
-          tenant_info: (tenant.info(@claims) if tenant.respond_to?(:info))
+          tenant_info: (@tenant_provider.info(@claims) if @tenant_provider.respond_to?(:info))
         }
       end
 
@@ -95,14 +95,14 @@ module OmniAuth
       # request_phase or callback_phase are called.
       def setup_phase
         if options.tenant_provider
-          provider = options.tenant_provider.new(self)
-          options.client_id = provider.client_id
-          options.tenant = provider.tenant_id
-          if provider.respond_to?(:openid_config_url)
-            options.openid_config_url = provider.openid_config_url
+          @tenant_provider = options.tenant_provider.new(self)
+          options.client_id = @tenant_provider.client_id
+          options.tenant = @tenant_provider.tenant_id
+          if @tenant_provider.respond_to?(:openid_config_url)
+            options.openid_config_url = @tenant_provider.openid_config_url
           end
-          if provider.respond_to?(:reset_password_param)
-            options.reset_password_param = provider.reset_password_param
+          if @tenant_provider.respond_to?(:reset_password_param)
+            options.reset_password_param = @tenant_provider.reset_password_param
           end
         end
 
